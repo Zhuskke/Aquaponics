@@ -1,5 +1,5 @@
-
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // 👈 import this
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase/firebase";
 
@@ -8,17 +8,31 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
 
+  const navigate = useNavigate(); // 👈 initialize navigation
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      alert("Login successful!");
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      if (user.emailVerified) {
+        alert("Login successful!");
+        // You can navigate to dashboard or home here
+      } else {
+        setError("Please verify your email before logging in.");
+        await auth.signOut();
+      }
     } catch (err) {
-      console.error('Login Error:', err);  // Log the complete error object
-      setError(err.message);  // Show the error message to the user
+      console.error('Login Error:', err);
+      setError(err.message);
     }
   };
   
+  const goToForgotPassword = () => {
+    navigate("/forgetpassword"); // 👈 where ForgotPassword component is routed
+  };
+
   return (
     <div>
       <h2>Login</h2>
@@ -39,7 +53,12 @@ const Login = () => {
         />
         <button type="submit">Login</button>
       </form>
-      {error && <p>{error}</p>}
+
+      <button onClick={goToForgotPassword} style={{ marginTop: "10px" }}>
+        Forgot Password?
+      </button>
+
+      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
 };
