@@ -1,21 +1,38 @@
 import React, { useState } from "react";
-import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  updateProfile
+} from "firebase/auth";
 import { auth } from "../firebase/firebase";
 
 const Register = () => {
+  const [username, setUsername] = useState(""); // 👈 added username state
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [message, setMessage] = useState(null);
+
+  const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      
+
+      // 👇 Set the display name (username)
+      await updateProfile(user, { displayName: username });
+
+      // 👇 Send email verification
       await sendEmailVerification(user);
       setMessage("Registration successful! Please check your email for verification.");
+
+      // 👇 Redirect to login after delay
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
     } catch (err) {
       setError(err.message);
     }
@@ -30,6 +47,13 @@ const Register = () => {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
           required
         />
         <input

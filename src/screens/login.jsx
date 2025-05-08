@@ -15,10 +15,10 @@ const Login = () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-
+  
       if (user.emailVerified) {
         alert("Login successful!");
-        // You can navigate to dashboard or home here
+        navigate("/dashboard"); // 👈 redirect to dashboard here
       } else {
         setError("Please verify your email before logging in.");
         await auth.signOut();
@@ -28,6 +28,7 @@ const Login = () => {
       setError(err.message);
     }
   };
+  
   
   const goToForgotPassword = () => {
     navigate("/forgetpassword"); // 👈 where ForgotPassword component is routed

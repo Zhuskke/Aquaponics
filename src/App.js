@@ -5,6 +5,7 @@ import TestAuth from "./screens/testAuth";
 import ChangePassword from "./screens/changePassword";
 import ForgetPassword from "./screens/forgetPassword";
 import Dashboard from "./screens/dashboard";
+import Profile from "./screens/profile";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/changepassword" element={<ChangePassword />} />
           <Route path="/forgetpassword" element={<ForgetPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </div>
     </Router>
